@@ -1,0 +1,41 @@
+//Design Code
+module mux21(output out,input s1,in0,in1);
+  assign out=((~s1)&(in0)|(s1)&(in1));
+endmodule
+
+module fa(output sum,carry,input a,b,c);
+  wire o1,o2,o3,o4,o5;
+  mux21 a1(o1,a,1'b1,1'b0);
+  mux21 a2(o2,b,a,o1);
+  mux21 a3(o3,o2,1'b1,1'b0);
+  mux21 a4(sum,c,o2,o3);
+  mux21 a5(o4,c,1'b0,o2);
+  mux21 a6(o5,b,1'b0,a);
+  mux21 a7(carry,o5,o4,1'b1);
+endmodule
+
+//Test Bench Code
+module tb();
+  reg a,b,c;
+  wire sum,carry;
+  fa DUT(sum,carry,a,b,c);
+  initial
+    begin
+      integer i;
+      for(i=0;i<8;i=i+1)
+        begin
+          {a,b,c}=i;
+          #10;
+        end
+    end
+  initial
+    begin
+      $monitor("a=%d,b=%d,c=%d,sum=%d,carry=%d",a,b,c,sum,carry);
+    end
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+  
+endmodule
